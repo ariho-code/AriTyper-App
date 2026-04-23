@@ -1,0 +1,24 @@
+services:
+  # Web Service
+  - type: web
+    name: arityper-admin
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    healthCheckPath: /api/stats
+    autoDeploy: true
+    disk:
+      name: arityper-disk
+      mountPath: /app/data
+      sizeGB: 1
+
+# Databases (if needed)
+databases:
+  - name: arityper-db
+    plan: free

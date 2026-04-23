@@ -1,0 +1,7 @@
+pdfplumber>=0.7.0
+python-docx>=0.8.11
+PyGetWindow>=0.0.9
+PyAutoGUI>=0.9.50
+pyobjc-framework-Quartz>=6.0; sys_platform == 'darwin'
+pywin32>=300; sys_platform == 'win32'
+

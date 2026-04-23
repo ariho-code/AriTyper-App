@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Delete vclass_typer.py",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"del",
+				"c:\\Users\\mujun\\Desktop\\vclass typer\\vclass_typer.py"
+			]
+		}
+	]
+}

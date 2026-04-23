@@ -1,0 +1,14 @@
+This is a test document for AriTyper.
+
+The quick brown fox jumps over the lazy dog.
+
+This document contains sample text to test the typing functionality.
+
+Features to test:
+- Text loading from file
+- Window selection
+- Typing into selected window
+- Progress tracking
+- Speed control
+
+Test complete!
