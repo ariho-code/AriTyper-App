@@ -119,7 +119,33 @@ Commercial Software - License key required.
 
 ## 🆘 Support
 
-## 👤 Credits / Developer
+## 🌐 Deployment
+
+### Frontend (Website) - Vercel
+The frontend is deployed on Vercel and includes:
+- Landing page with download functionality
+- Payment integration with MTN Mobile Money
+- User activation system
+- Modern responsive design
+
+**Deployment URL**: [AriTyper Website](https://arityper-app.vercel.app)
+
+### Backend (API) - Render
+The backend API is deployed on Render and provides:
+- License verification
+- Device management
+- Payment processing
+- Admin panel
+
+**API URL**: [AriTyper API](https://arityper-api.onrender.com)
+
+### GitHub Repository
+- **Repository**: https://github.com/ariho-code/AriTyper-App
+- **Owner**: ariho-tim
+- **Email**: metrofly55@gmail.com
+- **Branch**: master
+
+## 📱 Contact & Support
 
 **Developed by Timothy Ariho**
 
@@ -127,5 +153,6 @@ Commercial Software - License key required.
 - **X**: `https://x.com/arih0tim`
 - **Phone**: `0743249384`
 - **Email**: `timothy.arihoz@protonmail.com`
+- **GitHub**: `@ariho-tim`
 
 For technical support, license inquiries, or **custom software development**, please contact the developer.
