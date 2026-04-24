@@ -206,6 +206,9 @@
       
       <div class="user-menu">
         <span><i class="fas fa-user-circle"></i> {{ session.admin_username }}</span>
+        <a href="{{ url_for('change_password') }}" class="logout-btn" style="margin-right: 8px;">
+          <i class="fas fa-key"></i> Change Password
+        </a>
         <a href="{{ url_for('logout') }}" class="logout-btn">
           <i class="fas fa-sign-out-alt"></i> Logout
         </a>
