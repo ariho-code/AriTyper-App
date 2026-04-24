@@ -1,6 +1,13 @@
 // JavaScript for AriTyper Website
 
+// Analytics configuration
+const ANALYTICS_API = 'https://arityper-api.onrender.com/api';
+const SESSION_ID = generateSessionId();
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Track page visit
+    trackPageVisit();
+    
     // Initialize Bootstrap components
     initializeBootstrap();
     
@@ -16,6 +23,51 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup animations
     setupAnimations();
 });
+
+function generateSessionId() {
+    return 'session_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+}
+
+function trackPageVisit() {
+    try {
+        fetch(`${ANALYTICS_API}/track_visit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                page: window.location.pathname,
+                referrer: document.referrer || '',
+                session_id: SESSION_ID
+            })
+        }).catch(error => {
+            console.log('Analytics tracking failed:', error);
+        });
+    } catch (error) {
+        console.log('Analytics tracking error:', error);
+    }
+}
+
+function trackDownload(fileName, fileSize) {
+    try {
+        fetch(`${ANALYTICS_API}/track_download`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                file_name: fileName,
+                file_size: fileSize,
+                source: 'website',
+                session_id: SESSION_ID
+            })
+        }).catch(error => {
+            console.log('Download tracking failed:', error);
+        });
+    } catch (error) {
+        console.log('Download tracking error:', error);
+    }
+}
 
 function initializeBootstrap() {
     // Initialize all tooltips
@@ -150,6 +202,9 @@ function simulateDownloadProgress(progressContainer) {
 }
 
 function triggerActualDownload() {
+    // Track the download
+    trackDownload('AriTyper-Setup.exe', 25000000); // ~25MB estimated size
+    
     // Create a temporary link for download
     const link = document.createElement('a');
     link.href = '#'; // In production, this would be the actual file URL

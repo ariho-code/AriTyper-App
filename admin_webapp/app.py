@@ -50,6 +50,46 @@ def init_database():
         )
     ''')
     
+    # Website visits tracking
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS website_visits (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ip_address TEXT,
+            user_agent TEXT,
+            visit_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            page_visited TEXT,
+            referrer TEXT,
+            session_id TEXT
+        )
+    ''')
+    
+    # Downloads tracking
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS app_downloads (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ip_address TEXT,
+            user_agent TEXT,
+            download_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            file_name TEXT,
+            file_size INTEGER,
+            download_source TEXT,
+            session_id TEXT
+        )
+    ''')
+    
+    # Analytics summary
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS analytics_summary (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date DATE UNIQUE,
+            total_visits INTEGER DEFAULT 0,
+            unique_visitors INTEGER DEFAULT 0,
+            total_downloads INTEGER DEFAULT 0,
+            unique_downloads INTEGER DEFAULT 0,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
     # Licenses table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS licenses (
@@ -697,11 +737,179 @@ def get_stats():
         
         conn.close()
         
-        return jsonify({'success': True, 'stats': stats})
+    except Exception as e:
+        return f"Error: {str(e)}", 500
+
+@app.route('/api/latest_version')
+def get_latest_version():
+    """Get latest app version info"""
+    try:
+        updates_dir = os.path.join(os.getcwd(), 'updates')
+        if not os.path.exists(updates_dir):
+            return jsonify({'success': False, 'message': 'No updates available'})
+        
+        # Find the latest .exe file
+        files = [f for f in os.listdir(updates_dir) if f.endswith('.exe')]
+        if not files:
+            return jsonify({'success': False, 'message': 'No app files available'})
+        
+        # Get the latest file (by modification time)
+        latest_file = max(files, key=lambda f: os.path.getmtime(os.path.join(updates_dir, f)))
+        
+        return jsonify({
+            'success': True,
+            'filename': latest_file,
+            'download_url': f'/download/{latest_file}',
+            'size': os.path.getsize(os.path.join(updates_dir, latest_file))
+        })
         
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/api/track_visit', methods=['POST'])
+def track_visit():
+    """Track website visits"""
+    try:
+        data = request.get_json()
+        ip_address = request.remote_addr
+        user_agent = request.headers.get('User-Agent', '')
+        page_visited = data.get('page', '/')
+        referrer = data.get('referrer', '')
+        session_id = data.get('session_id', '')
+        
+        conn = get_db_connection()
+        
+        # Record visit
+        conn.execute('''
+            INSERT INTO website_visits (ip_address, user_agent, page_visited, referrer, session_id)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (ip_address, user_agent, page_visited, referrer, session_id))
+        
+        # Update daily summary
+        today = datetime.now().date()
+        existing = conn.execute('SELECT * FROM analytics_summary WHERE date = ?', (today,)).fetchone()
+        
+        if existing:
+            # Update existing record
+            conn.execute('''
+                UPDATE analytics_summary 
+                SET total_visits = total_visits + 1,
+                    unique_visitors = (SELECT COUNT(DISTINCT ip_address) FROM website_visits WHERE DATE(visit_time) = ?),
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE date = ?
+            ''', (today, today))
+        else:
+            # Create new record
+            conn.execute('''
+                INSERT INTO analytics_summary (date, total_visits, unique_visitors)
+                VALUES (?, 1, 1)
+            ''', (today,))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/api/track_download', methods=['POST'])
+def track_download():
+    """Track app downloads"""
+    try:
+        data = request.get_json()
+        ip_address = request.remote_addr
+        user_agent = request.headers.get('User-Agent', '')
+        file_name = data.get('file_name', 'arityper.exe')
+        file_size = data.get('file_size', 0)
+        download_source = data.get('source', 'website')
+        session_id = data.get('session_id', '')
+        
+        conn = get_db_connection()
+        
+        # Record download
+        conn.execute('''
+            INSERT INTO app_downloads (ip_address, user_agent, file_name, file_size, download_source, session_id)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (ip_address, user_agent, file_name, file_size, download_source, session_id))
+        
+        # Update daily summary
+        today = datetime.now().date()
+        existing = conn.execute('SELECT * FROM analytics_summary WHERE date = ?', (today,)).fetchone()
+        
+        if existing:
+            # Update existing record
+            conn.execute('''
+                UPDATE analytics_summary 
+                SET total_downloads = total_downloads + 1,
+                    unique_downloads = (SELECT COUNT(DISTINCT ip_address) FROM app_downloads WHERE DATE(download_time) = ?),
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE date = ?
+            ''', (today, today))
+        else:
+            # Create new record
+            conn.execute('''
+                INSERT INTO analytics_summary (date, total_downloads, unique_downloads)
+                VALUES (?, 1, 1)
+            ''', (today,))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/api/analytics', methods=['GET'])
+def get_analytics():
+    """Get analytics data for admin dashboard"""
+    if 'admin_logged_in' not in session:
+        return jsonify({'success': False, 'message': 'Not authorized'})
+    
+    try:
+        conn = get_db_connection()
+        
+        # Get summary data for last 30 days
+        summary_data = conn.execute('''
+            SELECT date, total_visits, unique_visitors, total_downloads, unique_downloads
+            FROM analytics_summary 
+            WHERE date >= date('now', '-30 days')
+            ORDER BY date DESC
+        ''').fetchall()
+        
+        # Get today's stats
+        today = datetime.now().date()
+        today_stats = conn.execute('''
+            SELECT 
+                (SELECT COUNT(*) FROM website_visits WHERE DATE(visit_time) = ?) as visits_today,
+                (SELECT COUNT(DISTINCT ip_address) FROM website_visits WHERE DATE(visit_time) = ?) as unique_visitors_today,
+                (SELECT COUNT(*) FROM app_downloads WHERE DATE(download_time) = ?) as downloads_today,
+                (SELECT COUNT(DISTINCT ip_address) FROM app_downloads WHERE DATE(download_time) = ?) as unique_downloads_today
+        ''', (today, today, today, today)).fetchone()
+        
+        # Get total stats
+        total_stats = conn.execute('''
+            SELECT 
+                (SELECT COUNT(*) FROM website_visits) as total_visits,
+                (SELECT COUNT(DISTINCT ip_address) FROM website_visits) as total_unique_visitors,
+                (SELECT COUNT(*) FROM app_downloads) as total_downloads,
+                (SELECT COUNT(DISTINCT ip_address) FROM app_downloads) as total_unique_downloads
+        ''').fetchone()
+        
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'summary_data': [dict(row) for row in summary_data],
+            'today_stats': dict(today_stats) if today_stats else {},
+            'total_stats': dict(total_stats) if total_stats else {}
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
 
 if __name__ == '__main__':
     init_database()
+    create_default_admin()
     app.run(host='0.0.0.0', port=5000, debug=True)
