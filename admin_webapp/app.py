@@ -171,9 +171,8 @@ def index():
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
-@limiter.limit("5 per minute")
 def login():
-    """Admin login with rate limiting"""
+    """Admin login"""
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
@@ -207,7 +206,6 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/change_password', methods=['GET', 'POST'])
-@limiter.limit("3 per hour")
 def change_password():
     """Change admin password"""
     if 'admin_logged_in' not in session:
