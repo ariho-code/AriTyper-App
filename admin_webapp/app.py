@@ -4,8 +4,6 @@ Host on Render for device management and license approval
 """
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash, send_file
 from flask_cors import CORS
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 import sqlite3
 import json
 import os
@@ -17,14 +15,6 @@ import time
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
 CORS(app)
-
-# Rate limiting configuration
-limiter = Limiter(
-    app,
-    key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour", "10 per minute"],
-    storage_uri="memory://",
-)
 
 # Database setup
 DB_FILE = "arityper_admin.db"
