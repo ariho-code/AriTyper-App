@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage -->
+  <url>
+    <loc>https://arityper-website.vercel.app/</loc>
+    <lastmod>2024-04-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://arityper-website.vercel.app/images/arityper-og-image.jpg</image:loc>
+      <image:title>AriTyper - Professional Auto-Typing Software</image:title>
+      <image:caption>Type PDF and Word documents into any restricted field instantly</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Terms and Conditions -->
+  <url>
+    <loc>https://arityper-website.vercel.app/terms.html</loc>
+    <lastmod>2024-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- User Manual -->
+  <url>
+    <loc>https://arityper-website.vercel.app/USER_MANUAL.md</loc>
+    <lastmod>2024-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+</urlset>

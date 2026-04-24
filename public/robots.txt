@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://arityper-website.vercel.app/sitemap.xml
+
+# Allow search engines to crawl all important content
+Allow: /index.html
+Allow: /terms.html
+Allow: /USER_MANUAL.md
+Allow: /images/
+
+# Block access to admin and sensitive files
+Disallow: /admin/
+Disallow: /api/
+Disallow: /admin_webapp/
+Disallow: /updates/
+Disallow: /arityper_admin.db
+Disallow: /license.json
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1
