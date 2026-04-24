@@ -898,6 +898,31 @@ def get_analytics():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
 
+def create_default_admin():
+    """Create default admin user if not exists"""
+    try:
+        conn = get_db_connection()
+        
+        # Check if admin user already exists
+        existing_admin = conn.execute('SELECT * FROM admin_users WHERE username = ?', ('admin',)).fetchone()
+        
+        if not existing_admin:
+            # Create default admin user
+            conn.execute('''
+                INSERT INTO admin_users (username, password_hash, email, created_at)
+                VALUES (?, ?, ?, ?)
+            ''', ('admin', 'admin123_hash', 'admin@arityper.com', datetime.now()))
+            
+            conn.commit()
+            print("Default admin user created successfully")
+        else:
+            print("Admin user already exists")
+            
+        conn.close()
+        
+    except Exception as e:
+        print(f"Error creating default admin: {str(e)}")
+
 if __name__ == '__main__':
     init_database()
     create_default_admin()
