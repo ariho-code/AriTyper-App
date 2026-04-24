@@ -128,7 +128,7 @@ The frontend is deployed on Vercel and includes:
 - User activation system
 - Modern responsive design
 
-**Deployment URL**: [AriTyper Website](https://arityper-app.vercel.app)
+**Deployment URL**: [AriTyper Website](https://arityper-website.vercel.app)
 
 ### Backend (API) - Render
 The backend API is deployed on Render and provides:
