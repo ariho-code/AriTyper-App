@@ -4,7 +4,7 @@ Host on Render for device management and license approval
 """
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash, send_file
 from flask_cors import CORS
-from flask_limiter import Limiter, get_remote_address
+from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import sqlite3
 import json
