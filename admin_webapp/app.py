@@ -740,32 +740,6 @@ def get_stats():
     except Exception as e:
         return f"Error: {str(e)}", 500
 
-@app.route('/api/latest_version')
-def get_latest_version():
-    """Get latest app version info"""
-    try:
-        updates_dir = os.path.join(os.getcwd(), 'updates')
-        if not os.path.exists(updates_dir):
-            return jsonify({'success': False, 'message': 'No updates available'})
-        
-        # Find the latest .exe file
-        files = [f for f in os.listdir(updates_dir) if f.endswith('.exe')]
-        if not files:
-            return jsonify({'success': False, 'message': 'No app files available'})
-        
-        # Get the latest file (by modification time)
-        latest_file = max(files, key=lambda f: os.path.getmtime(os.path.join(updates_dir, f)))
-        
-        return jsonify({
-            'success': True,
-            'filename': latest_file,
-            'download_url': f'/download/{latest_file}',
-            'size': os.path.getsize(os.path.join(updates_dir, latest_file))
-        })
-        
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)})
-
 @app.route('/api/track_visit', methods=['POST'])
 def track_visit():
     """Track website visits"""
