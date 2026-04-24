@@ -297,30 +297,36 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td style="font-family: var(--font-mono);">2.0.0</td>
-            <td>AriTyper-2.0.0.exe</td>
-            <td>24.5 MB</td>
-            <td>2024-01-15 14:30</td>
-            <td><span class="badge badge-success">Active</span></td>
-            <td>1,234</td>
-            <td>
-              <button class="action-btn"><i class="fas fa-download"></i> Download</button>
-              <button class="action-btn"><i class="fas fa-trash"></i> Delete</button>
-            </td>
-          </tr>
-          <tr>
-            <td style="font-family: var(--font-mono);">1.9.5</td>
-            <td>AriTyper-1.9.5.exe</td>
-            <td>23.8 MB</td>
-            <td>2024-01-10 09:15</td>
-            <td><span class="badge badge-warning">Deprecated</span></td>
-            <td>567</td>
-            <td>
-              <button class="action-btn"><i class="fas fa-download"></i> Download</button>
-              <button class="action-btn"><i class="fas fa-trash"></i> Delete</button>
-            </td>
-          </tr>
+          {% if updates %}
+            {% for update in updates %}
+            <tr>
+              <td style="font-family: var(--font-mono);">{{ update.version }}</td>
+              <td>{{ update.filename }}</td>
+              <td>{{ "%.1f"|format(update.size/1024/1024) }} MB</td>
+              <td>{{ update.upload_date.strftime('%Y-%m-%d %H:%M') if update.upload_date else 'N/A' }}</td>
+              <td>
+                <span class="badge badge-{{ 'success' if update.status == 'active' else 'warning' }}">
+                  {{ update.status.title() }}
+                </span>
+              </td>
+              <td>{{ "{:,}".format(update.downloads) if update.downloads else 0 }}</td>
+              <td>
+                <button class="action-btn" onclick="downloadUpdate('{{ update.filename }}')">
+                  <i class="fas fa-download"></i> Download
+                </button>
+                <button class="action-btn" onclick="deleteUpdate('{{ update.id }}')">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 40px; color: var(--muted);">
+                No updates uploaded yet. Upload your first update above.
+              </td>
+            </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>

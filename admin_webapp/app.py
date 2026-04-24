@@ -264,6 +264,8 @@ def dashboard():
         'total_licenses': conn.execute('SELECT COUNT(*) FROM licenses').fetchone()[0],
         'active_licenses': conn.execute('SELECT COUNT(*) FROM licenses WHERE status = "active"').fetchone()[0],
         'pending_payments': conn.execute('SELECT COUNT(*) FROM payments WHERE status = "pending"').fetchone()[0],
+        'total_revenue': conn.execute('SELECT COALESCE(SUM(amount), 0) FROM payments WHERE status = "approved"').fetchone()[0],
+        'approved_payments': conn.execute('SELECT COUNT(*) FROM payments WHERE status = "approved"').fetchone()[0],
     }
     
     # Get recent devices
