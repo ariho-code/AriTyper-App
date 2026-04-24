@@ -202,25 +202,54 @@ function simulateDownloadProgress(progressContainer) {
 }
 
 function triggerActualDownload() {
-    // Track the download
-    trackDownload('AriTyper-Setup.exe', 25000000); // ~25MB estimated size
-    
-    // Create a temporary link for download
-    const link = document.createElement('a');
-    link.href = '#'; // In production, this would be the actual file URL
-    link.download = 'AriTyper-Setup.exe';
-    link.style.display = 'none';
-    
-    // For demo purposes, we'll just show a message
-    showToast('In production, this would download the actual AriTyper installer', 'info');
-    
-    // Remove progress after completion
-    setTimeout(() => {
-        const progressContainer = document.querySelector('.download-progress');
-        if (progressContainer) {
-            progressContainer.remove();
-        }
-    }, 3000);
+    // Get latest version from backend API
+    fetch(`${ANALYTICS_API}/latest_version`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Track the download
+                trackDownload(data.filename, data.size);
+                
+                // Create download link
+                const link = document.createElement('a');
+                link.href = `${ANALYTICS_API}/download/${data.filename}`;
+                link.download = data.filename;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Show success message
+                showToast(`Download started: ${data.filename}`, 'success');
+                
+                // Remove progress after completion
+                setTimeout(() => {
+                    const progressContainer = document.querySelector('.download-progress');
+                    if (progressContainer) {
+                        progressContainer.remove();
+                    }
+                }, 3000);
+            } else {
+                // Show error message
+                showToast(`Download failed: ${data.message}`, 'error');
+                
+                // Remove progress
+                const progressContainer = document.querySelector('.download-progress');
+                if (progressContainer) {
+                    progressContainer.remove();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Download error:', error);
+            showToast('Download failed: Unable to connect to server', 'error');
+            
+            // Remove progress
+            const progressContainer = document.querySelector('.download-progress');
+            if (progressContainer) {
+                progressContainer.remove();
+            }
+        });
 }
 
 function setupAnimations() {

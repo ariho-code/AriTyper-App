@@ -181,8 +181,30 @@ class AriTyperWorking:
         h = hashlib.sha256("|".join(parts).encode()).hexdigest()
         return f"ARI-{h[:16].upper()}"
         
+    def get_device_info(self):
+        """Get device information for synchronization"""
+        try:
+            import psutil
+            return {
+                "os": platform.system(),
+                "version": platform.version(),
+                "machine": platform.machine(),
+                "processor": platform.processor(),
+                "hostname": socket.gethostname(),
+                "cpu_count": psutil.cpu_count(),
+                "memory_total": psutil.virtual_memory().total,
+                "python_version": platform.python_version()
+            }
+        except:
+            return {
+                "os": platform.system(),
+                "version": platform.version(),
+                "machine": platform.machine(),
+                "hostname": socket.gethostname()
+            }
+        
     def check_license(self):
-        """Check license"""
+        """Check license with enhanced webapp synchronization"""
         def check_thread():
             try:
                 # Check local license file
@@ -190,11 +212,20 @@ class AriTyperWorking:
                     with open("license.json") as f:
                         license_data = json.load(f)
                         
-                    # Validate with server
+                    # Enhanced validation with server
                     response = requests.post(
                         f"{self.server_url}/api/device/validate_license",
-                        json={"device_id": self.device_id, "license_key": license_data.get("license_key")},
-                        timeout=10
+                        json={
+                            "device_id": self.device_id, 
+                            "license_key": license_data.get("license_key"),
+                            "app_version": "2.0.0",
+                            "sync_data": {
+                                "last_sync": license_data.get("last_sync"),
+                                "usage_count": license_data.get("usage_count", 0),
+                                "device_info": self.get_device_info()
+                            }
+                        },
+                        timeout=15
                     )
                     
                     if response.status_code == 200 and response.json().get("valid"):

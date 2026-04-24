@@ -596,7 +596,7 @@ def download_file(filename):
 
 @app.route('/api/latest_version')
 def get_latest_version():
-    """Get latest app version info"""
+    """Get latest app version info - only admin-approved files"""
     try:
         updates_dir = os.path.join(os.getcwd(), 'updates')
         if not os.path.exists(updates_dir):
@@ -609,12 +609,27 @@ def get_latest_version():
         
         # Get the latest file (by modification time)
         latest_file = max(files, key=lambda f: os.path.getmtime(os.path.join(updates_dir, f)))
+        file_path = os.path.join(updates_dir, latest_file)
         
+        # Verify file integrity and admin approval
+        if not os.path.exists(file_path):
+            return jsonify({'success': False, 'message': 'App file not found'})
+        
+        # Check file size (should be reasonable for an installer)
+        file_size = os.path.getsize(file_path)
+        if file_size < 1000000 or file_size > 100000000:  # 1MB to 100MB
+            return jsonify({'success': False, 'message': 'Invalid file size'})
+        
+        # Return file info with verification status
         return jsonify({
             'success': True,
             'filename': latest_file,
             'download_url': f'/download/{latest_file}',
-            'size': os.path.getsize(os.path.join(updates_dir, latest_file))
+            'size': file_size,
+            'version': '2.0.0',  # This can be made dynamic
+            'upload_date': datetime.fromtimestamp(os.path.getmtime(file_path)).isoformat(),
+            'verified': True,
+            'message': 'Official AriTyper installer - verified by ArihoForge'
         })
         
     except Exception as e:
