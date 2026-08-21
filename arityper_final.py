@@ -20,6 +20,15 @@ import uuid
 import subprocess
 
 # Modern UI Components
+# AriTyper is free and unrestricted. There is no activation step, no payment
+# gate and no license server to call — the app always runs fully unlocked.
+FREE_LICENSE = {
+    "valid":      True,
+    "plan":       "free",
+    "expires_at": "Never",
+    "message":    "AriTyper is free — no license required.",
+}
+
 class ModernTheme:
     """Modern theme matching website design"""
     def __init__(self):
@@ -203,7 +212,8 @@ class AriTyperFinal:
         
         # Initialize components
         self.device_id = self._generate_device_id()
-        self.license_data = None
+        # AriTyper is free — no license server, no activation, no payment.
+        self.license_data = FREE_LICENSE
         self.is_typing = False
         self.selected_file = None
         self.server_url = "http://localhost:5000"  # Update to your Render URL
@@ -401,7 +411,7 @@ class AriTyperFinal:
     
     def create_right_panel(self, parent):
         """Create right panel with device and license info"""
-        card = ModernCard(parent, "Device & License Information")
+        card = ModernCard(parent, "Device Information")
         card.pack(fill='both', expand=True)
         
         # Device ID
@@ -434,7 +444,7 @@ class AriTyperFinal:
         
         tk.Label(
             license_frame,
-            text="License Status:",
+            text="Status:",
             font=self.theme.fonts['body'],
             bg=self.theme.colors['card'],
             fg=self.theme.colors['text']
@@ -477,74 +487,6 @@ class AriTyperFinal:
         self.server_info.pack(fill='x', pady=(5, 0))
         
         # Payment section
-        payment_frame = tk.Frame(card, bg=self.theme.colors['card'])
-        payment_frame.pack(fill='x', padx=20, pady=20)
-        
-        tk.Label(
-            payment_frame,
-            text="Payment & Activation:",
-            font=self.theme.fonts['body'],
-            bg=self.theme.colors['card'],
-            fg=self.theme.colors['text']
-        ).pack(anchor='w')
-        
-        # Payment info
-        payment_info_frame = tk.Frame(payment_frame, bg=self.theme.colors['surface'], relief='flat', bd=1)
-        payment_info_frame.pack(fill='x', pady=(10, 0))
-        
-        tk.Label(
-            payment_info_frame,
-            text="Pay UGX 10,000 to:",
-            font=self.theme.fonts['body'],
-            bg=self.theme.colors['surface'],
-            fg=self.theme.colors['text']
-        ).pack(anchor='w', padx=10, pady=(10, 5))
-        
-        tk.Label(
-            payment_info_frame,
-            text="• Airtel Money: 66562536",
-            font=self.theme.fonts['mono'],
-            bg=self.theme.colors['surface'],
-            fg=self.theme.colors['cyan']
-        ).pack(anchor='w', padx=10, pady=2)
-        
-        tk.Label(
-            payment_info_frame,
-            text="• MTN MoMo: 66562536",
-            font=self.theme.fonts['mono'],
-            bg=self.theme.colors['surface'],
-            fg=self.theme.colors['cyan']
-        ).pack(anchor='w', padx=10, pady=2)
-        
-        tk.Label(
-            payment_info_frame,
-            text="Then enter transaction ID below:",
-            font=self.theme.fonts['body'],
-            bg=self.theme.colors['surface'],
-            fg=self.theme.colors['text']
-        ).pack(anchor='w', padx=10, pady=(10, 5))
-        
-        # Transaction ID entry
-        self.transaction_entry = tk.Entry(
-            payment_info_frame,
-            font=self.theme.fonts['mono'],
-            bg=self.theme.colors['bg'],
-            fg=self.theme.colors['text'],
-            insertbackground=self.theme.colors['text'],
-            relief='flat',
-            bd=1
-        )
-        self.transaction_entry.pack(fill='x', padx=10, pady=(5, 10))
-        
-        # Activate button
-        activate_btn = ModernButton(
-            payment_frame,
-            text="🔑 Activate License",
-            style='primary',
-            command=self.activate_license
-        )
-        activate_btn.pack(pady=(10, 0))
-        
         return card
     
     def create_status_bar(self, parent):
@@ -571,154 +513,34 @@ class AriTyperFinal:
         ).pack(side='right', padx=20, pady=10)
     
     def start_app(self):
-        """Start application with authentication"""
-        self.update_status("Initializing...")
-        
-        # Start device monitoring thread
-        threading.Thread(target=self._start_device_monitoring, daemon=True).start()
-        
-        # Check license
-        self._check_license()
-    
-    def _start_device_monitoring(self):
-        """Start device monitoring in background"""
-        time.sleep(1)  # Allow UI to load
-        
-        # Register device with server
-        self._register_device()
-        
-        # Start heartbeat
-        self._start_heartbeat()
-    
-    def _register_device(self):
-        """Register device with server"""
-        try:
-            hostname = platform.node()
-            os_info = f"{platform.system()} {platform.release()}"
-            
-            payload = {
-                'device_id': self.device_id,
-                'hostname': hostname,
-                'os_info': os_info,
-                'user_info': {'app_version': '2.0.0'}
-            }
-            
-            response = requests.post(
-                f"{self.server_url}/api/device_heartbeat",
-                json=payload,
-                timeout=10
-            )
-            
-            if response.status_code == 200:
-                self.root.after(0, self._update_server_status, 'online', 'Connected')
-                self.root.after(0, self.update_status, "Device registered with server")
-            else:
-                self.root.after(0, self._update_server_status, 'offline', 'Server error')
-                
-        except Exception as e:
-            self.root.after(0, self._update_server_status, 'offline', 'No connection')
-            self.root.after(0, self.update_status, "Server unavailable")
-    
-    def _start_heartbeat(self):
-        """Start periodic heartbeat"""
-        def heartbeat_loop():
-            while True:
-                try:
-                    payload = {
-                        'device_id': self.device_id,
-                        'hostname': platform.node(),
-                        'os_info': f"{platform.system()} {platform.release()}",
-                        'user_info': {'app_version': '2.0.0'}
-                    }
-                    
-                    requests.post(
-                        f"{self.server_url}/api/device_heartbeat",
-                        json=payload,
-                        timeout=5
-                    )
-                    
-                except:
-                    pass
-                
-                time.sleep(60)  # Send heartbeat every minute
-        
-        threading.Thread(target=heartbeat_loop, daemon=True).start()
-    
+        """AriTyper is free — nothing to register, verify or unlock."""
+        self.license_data = FREE_LICENSE
+        self._update_license_status('active', 'Never')
+        self._update_server_status('offline', 'Not needed - AriTyper runs offline')
+        self.update_status("Ready - AriTyper is free to use")
+
     def _update_server_status(self, status, text):
-        """Update server status indicator"""
-        self.server_status.set_status(status, text)
-        
-        if status == 'online':
-            self.server_info.delete(1.0, tk.END)
-            self.server_info.insert(tk.END, f"Connected to server\n{self.server_url}\nLast check: {datetime.now().strftime('%H:%M:%S')}")
-        else:
-            self.server_info.delete(1.0, tk.END)
-            self.server_info.insert(tk.END, f"Server: {text}\nStatus: Offline\nCheck internet connection")
-    
+        """Server panel is informational only in the free build."""
+        self.server_info.delete(1.0, tk.END)
+        self.server_info.insert(tk.END, "No server required\nAriTyper runs fully offline\n")
+
     def _check_license(self):
-        """Check license status"""
-        try:
-            # Try server validation first
-            response = requests.post(
-                f"{self.server_url}/api/device/validate_license",
-                json={'device_id': self.device_id, 'license_key': self._get_local_license_key()},
-                timeout=10
-            )
-            
-            if response.status_code == 200:
-                result = response.json()
-                if result.get('valid'):
-                    self._update_license_status('active', result.get('expires_at', 'Never'))
-                    self.license_data = result
-                    self.update_status("License validated - Ready to use")
-                    return
-        
-        except:
-            pass
-        
-        # Fallback to local check
-        local_key = self._get_local_license_key()
-        if local_key:
-            self._update_license_status('pending', 'Local license - Server verification needed')
-            self.update_status("Local license found - Waiting for server verification")
-        else:
-            self._update_license_status('unlicensed', 'No license - Payment required')
-            self.update_status("No license - Please make payment to activate")
-    
+        """Always licensed — no server call, works fully offline."""
+        self.license_data = FREE_LICENSE
+
     def _get_local_license_key(self):
-        """Get locally stored license key"""
-        try:
-            license_file = "license.json"
-            if os.path.exists(license_file):
-                with open(license_file, 'r') as f:
-                    data = json.load(f)
-                    return data.get('license_key')
-        except:
-            pass
         return None
-    
-    def _update_license_status(self, status, details):
-        """Update license status"""
-        self.license_status.set_status(status, status.replace('_', ' ').title())
-        
+
+    def _update_license_status(self, status='active', details='Never'):
+        """Status panel — the free build is always active."""
+        self.license_status.set_status('active', 'Free')
+
         self.license_info.delete(1.0, tk.END)
-        
-        if status == 'active':
-            self.license_info.insert(tk.END, f"Status: Active\n")
-            self.license_info.insert(tk.END, f"Expires: {details}\n")
-            self.license_info.insert(tk.END, f"Device: {self.device_id}\n")
-            self.license_info.insert(tk.END, f"Type: Device-locked license")
-        elif status == 'pending':
-            self.license_info.insert(tk.END, f"Status: Pending verification\n")
-            self.license_info.insert(tk.END, f"Device: {self.device_id}\n")
-            self.license_info.insert(tk.END, f"Type: Local license\n")
-            self.license_info.insert(tk.END, f"Note: Server verification in progress")
-        else:
-            self.license_info.insert(tk.END, f"Status: Unlicensed\n")
-            self.license_info.insert(tk.END, f"Device: {self.device_id}\n")
-            self.license_info.insert(tk.END, f"Action: Payment required\n")
-            self.license_info.insert(tk.END, f"Price: UGX 10,000 (one-time)")
-    
+        self.license_info.insert(tk.END, "Status: Free\n")
+        self.license_info.insert(tk.END, "Expires: Never\n")
+        self.license_info.insert(tk.END, f"Device: {self.device_id}\n")
+        self.license_info.insert(tk.END, "Type: No license required")
+
     def browse_file(self):
         """Browse for document file"""
         file_path = filedialog.askopenfilename(
@@ -741,10 +563,6 @@ class AriTyperFinal:
         """Start typing process"""
         if not self.selected_file:
             messagebox.showwarning("No File", "Please select a document file first")
-            return
-        
-        if not self.license_data or not self.license_data.get('valid'):
-            messagebox.showwarning("License Required", "Please activate your license to use this feature")
             return
         
         self.is_typing = True
@@ -782,54 +600,6 @@ class AriTyperFinal:
         self.stop_btn.config(state='disabled')
         self.update_status("Typing stopped")
         self.progress_bar.set_progress(0)
-    
-    def activate_license(self):
-        """Activate license with transaction ID"""
-        transaction_id = self.transaction_entry.get().strip()
-        
-        if not transaction_id:
-            messagebox.showwarning("Invalid Input", "Please enter your transaction ID")
-            return
-        
-        if len(transaction_id) < 4:
-            messagebox.showwarning("Invalid Input", "Transaction ID is too short")
-            return
-        
-        # Submit to server for approval
-        def submit_thread():
-            try:
-                payload = {
-                    'device_id': self.device_id,
-                    'transaction_id': transaction_id,
-                    'phone_number': '+256760730254',  # User will provide actual number
-                    'amount': '10000',
-                    'network': 'airtel',  # Default
-                    'notes': f'License request from device {self.device_id}'
-                }
-                
-                response = requests.post(
-                    f"{self.server_url}/api/submit_payment",
-                    json=payload,
-                    timeout=10
-                )
-                
-                if response.status_code == 200:
-                    result = response.json()
-                    if result.get('success'):
-                        self.root.after(0, messagebox.showinfo, "Payment Submitted", 
-                                      "Your payment has been submitted for approval.\n\n"
-                                      "You will receive your license key once approved.\n"
-                                      "This usually takes a few minutes.")
-                        self.root.after(0, self.update_status, "Payment submitted - Waiting for approval")
-                    else:
-                        self.root.after(0, messagebox.showerror, "Error", result.get('message', 'Unknown error'))
-                else:
-                    self.root.after(0, messagebox.showerror, "Server Error", "Failed to submit payment")
-                    
-            except Exception as e:
-                self.root.after(0, messagebox.showerror, "Network Error", f"Failed to connect: {e}")
-        
-        threading.Thread(target=submit_thread, daemon=True).start()
     
     def _update_speed_label(self, *args):
         """Update speed label"""

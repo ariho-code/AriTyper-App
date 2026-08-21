@@ -741,49 +741,13 @@ def delete_device():
 
 @app.route('/api/device/validate_license', methods=['POST'])
 def validate_device_license():
-    """Validate device license"""
-    try:
-        data = request.json
-        device_id = data.get('device_id')
-        license_key = data.get('license_key')
-        
-        if not device_id or not license_key:
-            return jsonify({'valid': False, 'message': 'Device ID and license key required'})
-        
-        conn = get_db_connection()
-        
-        # Check if license exists and is active
-        license_record = conn.execute('''
-            SELECT status, expires_at, device_id 
-            FROM licenses 
-            WHERE license_key = ?
-        ''', (license_key,)).fetchone()
-        
-        if not license_record:
-            conn.close()
-            return jsonify({'valid': False, 'message': 'License not found'})
-        
-        # Check if license is active and not expired
-        if license_record['status'] != 'active':
-            conn.close()
-            return jsonify({'valid': False, 'message': 'License not active'})
-        
-        # Check expiration
-        expires_at = datetime.fromisoformat(license_record['expires_at'])
-        if datetime.now() > expires_at:
-            conn.close()
-            return jsonify({'valid': False, 'message': 'License expired'})
-        
-        # Check if license is for this device
-        if license_record['device_id'] != device_id:
-            conn.close()
-            return jsonify({'valid': False, 'message': 'License not for this device'})
-        
-        conn.close()
-        return jsonify({'valid': True, 'message': 'License valid'})
-        
-    except Exception as e:
-        return jsonify({'valid': False, 'message': str(e)})
+    """AriTyper is free — every device validates. No key or expiry is checked."""
+    return jsonify({
+        'valid': True,
+        'message': 'AriTyper is free — no license required.',
+        'plan': 'free',
+        'expires_at': None
+    })
 
 @app.route('/api/stats')
 def get_stats():

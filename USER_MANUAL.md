@@ -3,7 +3,7 @@
 ## 📖 Table of Contents
 1. [Getting Started](#getting-started)
 2. [Installation](#installation)
-3. [License Activation](#license-activation)
+3. [Free & Unrestricted](#free--unrestricted)
 4. [Basic Usage](#basic-usage)
 5. [Advanced Features](#advanced-features)
 6. [Troubleshooting](#troubleshooting)
@@ -20,7 +20,7 @@ AriTyper is a professional auto-typing software that extracts text from PDF or W
 - ✅ **Format Preservation**: Maintains text alignment (center, left, right, justified)
 - ✅ **Window Selection**: Type into any application window
 - ✅ **Adjustable Speed**: Control typing speed from ultra-fast to human-like
-- ✅ **Device Locking**: Secure license system
+- ✅ **Completely Free**: No license key, no activation, works offline
 
 ---
 
@@ -30,7 +30,7 @@ AriTyper is a professional auto-typing software that extracts text from PDF or W
 - **Windows**: Windows 8, 10, or 11
 - **RAM**: Minimum 4GB RAM
 - **Storage**: 100MB free space
-- **Internet**: Required for license activation
+- **Internet**: Not required — AriTyper runs fully offline
 
 ### Installation Steps:
 1. Download AriTyper from the official website
@@ -40,24 +40,15 @@ AriTyper is a professional auto-typing software that extracts text from PDF or W
 
 ---
 
-## 🔐 License Activation
+## 🆓 Free & Unrestricted
 
-### Step 1: Purchase License
-1. Visit the official AriTyper website
-2. Click "Download & Purchase"
-3. Complete payment via MTN Mobile Money (UGX 10,000)
-4. Save your transaction ID
+There is nothing to buy, enter or wait for:
 
-### Step 2: Activate License
-1. Launch AriTyper
-2. Enter your transaction ID when prompted
-3. Wait for admin approval (usually within minutes)
-4. Your license will be automatically activated
-
-### Step 3: Device Locking
-- Each license is locked to your device
-- Cannot be shared across multiple computers
-- Contact support for device transfers
+- **No license key** — launch AriTyper and it opens straight to the typing screen
+- **No activation** — no transaction ID, no admin approval step
+- **No device locking** — install it on as many computers as you like
+- **No internet needed** — the app never contacts a licensing server, so it keeps
+  working whether or not any backend is online
 
 ---
 
@@ -120,12 +111,6 @@ AriTyper is a professional auto-typing software that extracts text from PDF or W
 
 ### Common Issues:
 
-#### ❌ "License Not Activated"
-**Solution**: 
-- Check your transaction ID
-- Ensure payment was completed
-- Contact support if approval takes >30 minutes
-
 #### ❌ "Window Not Found"
 **Solution**:
 - Refresh window list
@@ -143,12 +128,6 @@ AriTyper is a professional auto-typing software that extracts text from PDF or W
 - Ensure file is PDF, DOCX, or TXT
 - Check if file is corrupted
 - Try converting to different format
-
-#### ❌ "Device Locked"
-**Solution**:
-- License is device-specific
-- Contact support for device transfer
-- Purchase new license if needed
 
 ### Error Messages:
 - **"Window selection failed"**: Restart application and try again
@@ -178,7 +157,7 @@ AriTyper is a professional auto-typing software that extracts text from PDF or W
 1. Check this user manual first
 2. Visit the FAQ section on the website
 3. Contact support via phone or email
-4. Include your license key and transaction ID
+4. Include your operating system and a description of the problem
 
 ---
 
@@ -204,15 +183,13 @@ AriTyper is a professional auto-typing software that extracts text from PDF or W
 ## 📄 Legal Information
 
 ### 📋 **License Agreement**:
-- Single device license
-- Non-transferable
+- Free to use
+- Unlimited devices
 - Commercial use permitted
-- No refunds after activation
 
 ### 🔒 **Privacy Policy**:
 - No personal data collection
-- License verification only
-- Secure payment processing
+- No license or payment verification of any kind
 
 ---
 

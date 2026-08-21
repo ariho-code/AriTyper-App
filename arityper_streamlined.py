@@ -35,6 +35,18 @@ except ImportError:
     WINDOWS_SUPPORT = False
 
 # ═══════════════════════════════════════════════════════
+#  LICENSING
+# ═══════════════════════════════════════════════════════
+# AriTyper is free and unrestricted. There is no activation step, no payment
+# gate and no license server to call — the app always runs fully unlocked.
+FREE_LICENSE = {
+    "valid":      True,
+    "plan":       "free",
+    "expires_at": "Never",
+    "message":    "AriTyper is free — no license required.",
+}
+
+# ═══════════════════════════════════════════════════════
 #  DESIGN TOKENS - Modern Clean UI
 # ═══════════════════════════════════════════════════════
 BG       = "#0a0e1a"
@@ -146,15 +158,15 @@ class AriTyperStreamlined:
         self.root = root
         self.server_url = "http://localhost:5000"
         self.device_id = self._generate_device_id()
-        self.license_data = None
+        # AriTyper is free — no license server, no activation, no payment.
+        self.license_data = FREE_LICENSE
         self.target_window = None
         self.is_typing = False
-        self.current_view = "activation"
+        self.current_view = "main"
         self.selected_file = None
-        
+
         self._setup_window()
-        self.create_activation_ui()
-        self.start_app()
+        self._build_main_ui()
         
     def _setup_window(self):
         """Setup main window with modern styling"""
@@ -176,46 +188,12 @@ class AriTyperStreamlined:
         style.configure("TScale", background=CARD, troughcolor=CARD2, 
                        slidercolor=ACCENT, sliderlength=20)
         
-    # ═══════════════════════════════════════════
-    #  ACTIVATION UI
-    # ═══════════════════════════════════════════
-    def create_activation_ui(self):
-        """Clean activation interface"""
-        self.activation_frame = tk.Frame(self.root, bg=BG)
-        self.activation_frame.pack(fill="both", expand=True)
-        
-        # Header
-        header = RoundedCard(self.activation_frame, border_color=ACCENT)
-        header._outer.pack(fill="x", padx=20, pady=(20, 10))
-        
-        tk.Label(header._inner, text="🚀 AriTyper", font=FT_TITLE, 
-                bg=CARD, fg=ACCENT).pack(pady=15)
-        tk.Label(header._inner, text="Professional Typing Tool", font=FT_BODY,
-                bg=CARD, fg=MUTED).pack()
-        
-        # Device info
-        device_card = RoundedCard(self.activation_frame, border_color=BORDER)
-        device_card._outer.pack(fill="x", padx=20, pady=5)
-        
-        tk.Label(device_card._inner, text=f"Device: {self.device_id}", font=FT_MONO,
-                bg=CARD, fg=MUTED).pack(pady=10)
-        
-        # License status
-        self.license_status_label = tk.Label(device_card._inner, text="🔒 Checking license...", 
-                                           font=FT_BODY, bg=CARD, fg=ORANGE)
-        self.license_status_label.pack(pady=5)
-        
-        # Status
-        self.status_label = tk.Label(self.activation_frame, text="Initializing...", 
-                                    font=FT_BODY, bg=BG, fg=MUTED)
-        self.status_label.pack(pady=10)
-        
     def _build_main_ui(self):
         """Streamlined main typing interface"""
         if hasattr(self, 'activation_frame'):
             self.activation_frame.pack_forget()
             
-        self.root.title("AriTyper - Licensed")
+        self.root.title("AriTyper - Free")
         
         main_frame = tk.Frame(self.root, bg=BG)
         main_frame.pack(fill="both", expand=True)
@@ -224,7 +202,7 @@ class AriTyperStreamlined:
         header = RoundedCard(main_frame, border_color=GREEN)
         header._outer.pack(fill="x", padx=20, pady=(20, 10))
         
-        tk.Label(header._inner, text="✅ AriTyper - Licensed", font=FT_TITLE,
+        tk.Label(header._inner, text="✅ AriTyper — Free", font=FT_TITLE,
                 bg=CARD, fg=GREEN).pack(pady=10)
         tk.Label(header._inner, text=f"Device: {self.device_id}", font=FT_MONO,
                 bg=CARD, fg=MUTED).pack(pady=5)
@@ -517,45 +495,23 @@ class AriTyperStreamlined:
         self.speed_label.config(text=f"{speed}%")
         
     # ═══════════════════════════════════════════
-    #  LICENSING SYSTEM
+    #  LICENSING (free build — nothing to check)
     # ═══════════════════════════════════════════
     def start_app(self):
-        """Start app with license checking"""
-        threading.Thread(target=self._check_license, daemon=True).start()
-        
+        """No-op: AriTyper is free, so there is nothing to verify."""
+        self.license_data = FREE_LICENSE
+
     def _check_license(self):
-        """Check license and unlock if valid"""
-        try:
-            # Check local license file
-            if os.path.exists("license.json"):
-                with open("license.json") as f:
-                    license_data = json.load(f)
-                    
-                # Validate with server
-                response = requests.post(
-                    f"{self.server_url}/api/device/validate_license",
-                    json={"device_id": self.device_id, "license_key": license_data.get("license_key")},
-                    timeout=10
-                )
-                
-                if response.status_code == 200 and response.json().get("valid"):
-                    self.root.after(0, self._unlock_app)
-                    return
-                    
-        except:
-            pass
-            
-        # Show activation screen
-        self.root.after(0, lambda: self.license_status_label.config(
-            text="🔒 License Required - Contact Admin", fg=RED))
-        self.root.after(0, lambda: self.status_label.config(
-            text="Please contact admin to activate your license"))
-            
+        """Always licensed — no server call, works fully offline."""
+        self.license_data = FREE_LICENSE
+
     def _unlock_app(self):
-        """Unlock the app"""
-        self.license_data = {"valid": True}
-        self.root.after(0, self._build_main_ui)
-        
+        """The app ships unlocked; kept so old call sites stay valid."""
+        self.license_data = FREE_LICENSE
+        if self.current_view != "main":
+            self.current_view = "main"
+            self._build_main_ui()
+
     def _generate_device_id(self):
         """Generate unique device ID"""
         parts = []

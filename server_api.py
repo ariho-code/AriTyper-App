@@ -163,68 +163,19 @@ def device_heartbeat():
 
 @app.route('/api/device/validate_license', methods=['POST'])
 def validate_license():
-    """Validate license for a device"""
-    try:
-        data = request.json
-        device_id = data.get('device_id')
-        license_key = data.get('license_key')
-        
-        conn = sqlite3.connect(DB_FILE)
-        cursor = conn.cursor()
-        
-        # Check license
-        cursor.execute('''
-            SELECT * FROM licenses 
-            WHERE license_key = ? AND device_id = ?
-        ''', (license_key, device_id))
-        
-        license_data = cursor.fetchone()
-        
-        if license_data:
-            # Check expiration
-            expires_at = license_data[4]
-            if expires_at and datetime.fromisoformat(expires_at) < datetime.now():
-                # License expired
-                cursor.execute('''
-                    UPDATE licenses SET status = 'expired' WHERE license_key = ?
-                ''', (license_key,))
-                conn.commit()
-                conn.close()
-                
-                log_activity(device_id, 'license_check_failed', {'reason': 'expired'})
-                
-                return jsonify({
-                    'valid': False,
-                    'message': 'License has expired'
-                })
-            
-            # License valid
-            cursor.execute('''
-                UPDATE devices 
-                SET license_key = ?, license_status = 'active'
-                WHERE device_id = ?
-            ''', (license_key, device_id))
-            conn.commit()
-            conn.close()
-            
-            log_activity(device_id, 'license_check_success')
-            
-            return jsonify({
-                'valid': True,
-                'message': 'License is valid',
-                'expires_at': expires_at
-            })
-        else:
-            conn.close()
-            log_activity(device_id, 'license_check_failed', {'reason': 'not_found'})
-            
-            return jsonify({
-                'valid': False,
-                'message': 'License not found or invalid for this device'
-            })
-            
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+    """AriTyper is free — every device validates. No key or expiry is checked."""
+    data = request.json or {}
+    device_id = data.get('device_id')
+
+    if device_id:
+        log_activity(device_id, 'license_check_success', {'plan': 'free'})
+
+    return jsonify({
+        'valid': True,
+        'message': 'AriTyper is free — no license required.',
+        'plan': 'free',
+        'expires_at': None
+    })
 
 @app.route('/api/admin/devices', methods=['GET'])
 def get_devices():

@@ -148,108 +148,31 @@ class LicenseManager:
     
     def validate_license(self, license_key: str = None) -> Dict[str, Any]:
         """
-        Validate license key or check existing license
-        Returns dict with 'valid' boolean and 'message' string
+        AriTyper is free — every device is always valid.
+
+        No license file, device lock or expiry is enforced. Any locally stored
+        license data is still returned for informational purposes only.
         """
-        license_data = self.load_license()
-        
-        # No license file exists
-        if not license_data:
-            return {
-                'valid': False,
-                'message': 'No license found. Please purchase a license.',
-                'device_id': self.device_id
-            }
-        
-        # Check if license is active
-        if license_data.get('status') != 'active':
-            return {
-                'valid': False,
-                'message': f"License is {license_data.get('status', 'inactive')}",
-                'device_id': self.device_id
-            }
-        
-        # Check device ID match (if device locking is enabled)
-        if license_data.get('device_lock') and license_data.get('device_id'):
-            if license_data['device_id'] != self.device_id:
-                return {
-                    'valid': False,
-                    'message': 'License not valid for this device.',
-                    'device_id': self.device_id
-                }
-        
-        # Check expiration
-        if license_data.get('expires_at'):
-            expires = datetime.fromisoformat(license_data['expires_at'])
-            if datetime.now() > expires:
-                # Auto-expire
-                license_data['status'] = 'expired'
-                self.save_license(license_data)
-                return {
-                    'valid': False,
-                    'message': 'License has expired. Please renew.',
-                    'device_id': self.device_id
-                }
-        
         return {
             'valid': True,
-            'message': 'License is valid',
+            'message': 'AriTyper is free — no license required.',
             'device_id': self.device_id,
-            'license_data': license_data
-        }
-    
-    def activate_license(self, license_key: str, phone_number: str = None) -> Dict[str, Any]:
-        """
-        Activate license with key (admin approved)
-        """
-        # In production, this would verify against a server
-        # For now, we'll check against approved licenses file
-        approved_file = "approved_licenses.json"
-        
-        try:
-            if os.path.exists(approved_file):
-                with open(approved_file, 'r') as f:
-                    approved = json.load(f)
-                
-                # Check if license key is approved
-                if license_key in approved:
-                    license_info = approved[license_key]
-                    
-                    # Create license data
-                    license_data = {
-                        'license_key': license_key,
-                        'device_id': self.device_id,
-                        'device_lock': True,
-                        'status': 'active',
-                        'phone_number': phone_number,
-                        'activated_at': datetime.now().isoformat(),
-                        'expires_at': license_info.get('expires_at'),
-                        'plan': license_info.get('plan', 'monthly'),
-                        'approved_by': license_info.get('approved_by', 'admin')
-                    }
-                    
-                    self.save_license(license_data)
-                    
-                    return {
-                        'success': True,
-                        'message': 'License activated successfully!',
-                        'expires_at': license_info.get('expires_at')
-                    }
-                else:
-                    return {
-                        'success': False,
-                        'message': 'License key not found or not approved yet.'
-                    }
-            else:
-                return {
-                    'success': False,
-                    'message': 'License system not configured. Contact admin.'
-                }
-        except Exception as e:
-            return {
-                'success': False,
-                'message': f'Error activating license: {str(e)}'
+            'license_data': self.load_license() or {
+                'plan': 'free',
+                'status': 'active',
+                'expires_at': None
             }
+        }
+
+    def activate_license(self, license_key: str = None, phone_number: str = None) -> Dict[str, Any]:
+        """
+        No activation needed — the app is already unlocked for everyone.
+        """
+        return {
+            'success': True,
+            'message': 'AriTyper is free — no activation needed.',
+            'expires_at': None
+        }
     
     def deactivate_license(self) -> bool:
         """Remove local license (for logout/reset)"""
