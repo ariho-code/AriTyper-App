@@ -6,7 +6,6 @@ Simplified version focused on typing performance with clean licensing integratio
 
 import tkinter as tk
 from tkinter import ttk, scrolledtext, filedialog, messagebox
-import requests
 import threading
 import time
 import json

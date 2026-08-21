@@ -14,7 +14,6 @@ import webbrowser
 import os
 import json
 import socket
-import requests
 from datetime import datetime, timedelta
 import uuid
 import subprocess

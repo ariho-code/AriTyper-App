@@ -7,7 +7,6 @@ All backend logic preserved from original.
 """
 import tkinter as tk
 from tkinter import ttk, scrolledtext, filedialog, messagebox
-import requests
 import threading
 import time
 import json
