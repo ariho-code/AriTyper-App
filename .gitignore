@@ -1,0 +1,21 @@
+# Virtual environment created by run.bat / run.ps1 / run.sh
+.venv/
+venv/
+env/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# PyInstaller build output
+build/
+*.manifest
+
+# Local licence/payment state (AriTyper is free; these are legacy artefacts)
+approved_licenses.json
+pending_payments.json
+payments.json
+
+# OS noise
+.DS_Store
+Thumbs.db

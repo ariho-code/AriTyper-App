@@ -2,20 +2,30 @@
 
 ## To Run AriTyper:
 
-1. **Make sure dependencies are installed:**
-   ```
-   pip install -r requirements.txt
-   ```
+**Windows (Command Prompt):**
+```
+run.bat
+```
 
-2. **Run the application:**
-   ```
-   python arityper.py
-   ```
+**Windows (PowerShell):**
+```
+.\run.ps1
+```
 
-3. **When the authentication dialog appears:**
-   - Enter the password: `#Code4good@1425`
-   - Press Enter or click "Authenticate"
-   - The main application window should appear
+**Linux / macOS:**
+```
+./run.sh
+```
+
+The launcher installs everything it needs on the first run, then opens AriTyper
+straight to the typing screen. There is no password, license key or activation
+step — the app is free.
+
+To run it manually instead:
+```
+pip install -r requirements.txt
+python arityper_activated.py
+```
 
 ## If It Doesn't Work:
 
@@ -23,26 +33,29 @@
    - Look for any error messages
    - Share them if you need help
 
-2. **Test password separately:**
-   ```
-   python test_auth.py
-   ```
-   Enter: `#Code4good@1425`
-
-3. **Verify Python version:**
+2. **Verify Python version:**
    ```
    python --version
    ```
-   Should be 3.6 or higher
+   Should be 3.8 or higher
 
-4. **Check dependencies:**
+3. **Check dependencies:**
    ```
-   pip list | findstr "pdfplumber python-docx PyGetWindow PyAutoGUI"
+   pip list | findstr "pdfplumber python-docx PyPDF2 PyGetWindow PyAutoGUI"
+   ```
+
+4. **Confirm the app is unlocked and openable:**
+   ```
+   python test_open_access.py
    ```
 
 ## Common Issues:
 
-- **Dialog doesn't appear**: Check if Tkinter is working: `python -m tkinter`
-- **Password not accepted**: Make sure you're typing exactly `#Code4good@1425` (including the #)
-- **Import errors**: Run `pip install -r requirements.txt` again
-
+- **`'python' is not recognized`**: Python isn't on your PATH. Reinstall it from
+  python.org and tick "Add python.exe to PATH", then open a new terminal.
+- **PowerShell refuses to run the script**: use
+  `powershell -ExecutionPolicy Bypass -File .\run.ps1`
+- **Window doesn't appear**: check Tkinter is working: `python -m tkinter`
+- **Import errors**: delete the `.venv` folder and run the launcher again
+- **Typing does nothing on Linux/macOS**: window targeting needs `PyGetWindow`,
+  which is Windows-only. The UI and document extraction still work.

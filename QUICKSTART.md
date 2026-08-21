@@ -10,26 +10,29 @@
 
 ## First Time Setup
 
-1. **Install Python** (3.6 or higher) if you haven't already
+AriTyper is free — there is no license key, activation or password.
 
-2. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
+1. **Install Python** (3.8 or higher) from
+   [python.org/downloads](https://www.python.org/downloads/).
+   On Windows, tick **"Add python.exe to PATH"** in the installer.
+
+2. **Get AriTyper and start it.** In Command Prompt:
+
+   ```bat
+   git clone https://github.com/ariho-code/AriTyper-App
+   cd AriTyper-App
+   run.bat
    ```
 
-3. **Run the Application**:
-   ```bash
-   python arityper.py
-   ```
+   In PowerShell, use `.\run.ps1` instead of `run.bat`.
+   On Linux/macOS, use `./run.sh`.
 
-4. **Enter License Key**: `#Code4good@1425`
-   
-   ⚠️ **Important**: The password is case-sensitive and must be entered exactly as shown (including the # symbol at the start).
-   
-   If you're having trouble, you can test the password by running:
-   ```bash
-   python test_auth.py
-   ```
+   No Git? Download the ZIP from GitHub (**Code → Download ZIP**), extract it,
+   and double-click **`run.bat`**.
+
+That's all. The first run installs the dependencies automatically (one time
+only), then AriTyper opens straight to the typing screen. Later runs start
+immediately.
 
 ## Basic Usage
 

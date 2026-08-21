@@ -22,31 +22,74 @@ keeps working regardless of whether any server is online.
 - ✅ **Smart Focus Management**: Only types in the selected window, allows you to continue using your computer
 - 🔧 **Backward Compatible**: Gracefully handles older OS versions with fallback mechanisms
 
-## 📦 Installation
+## 📦 Install & Run (Windows)
 
-1. Ensure you have Python 3.6 or higher installed (3.7+ recommended).
-   
-   **System Requirements:**
-   - **Windows**: Windows 8, Windows 10, or Windows 11
-   - **macOS**: macOS 10.12 (Sierra) or later (including latest versions)
+No installer and no `.exe` — you run two commands and the app opens.
 
-2. Install the required dependencies:
-```bash
-pip install -r requirements.txt
+**Step 1 — install Python** (one time only), if you don't already have it.
+Download it from [python.org/downloads](https://www.python.org/downloads/) and
+**tick "Add python.exe to PATH"** on the first screen of the installer.
+
+**Step 2 — get AriTyper and start it.** Open **Command Prompt** and run:
+
+```bat
+git clone https://github.com/ariho-code/AriTyper-App
+cd AriTyper-App
+run.bat
 ```
 
-Note: On macOS, you may need to install additional dependencies. The script will handle platform-specific requirements automatically.
+No Git? Download the repo as a ZIP from GitHub (**Code → Download ZIP**), extract
+it, open the folder, and double-click **`run.bat`**.
 
-## 🚀 Usage
+Using **PowerShell** instead of Command Prompt:
 
-1. Run the application (the app opens straight to the typing screen — no login,
-   no activation):
+```powershell
+git clone https://github.com/ariho-code/AriTyper-App
+cd AriTyper-App
+.\run.ps1
+```
+
+If PowerShell blocks the script, run it this way — it changes no system setting:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\run.ps1
+```
+
+That's it. The first run creates a private environment and installs the
+dependencies (a minute or two, one time only), then AriTyper opens. **Every run
+after that starts immediately.** Keep the terminal window open while you use the
+app; close the AriTyper window to quit.
+
+### 🐧 Linux / macOS
+
 ```bash
+git clone https://github.com/ariho-code/AriTyper-App
+cd AriTyper-App
+./run.sh
+```
+
+On Debian/Ubuntu/Kali you may first need:
+`sudo apt install python3 python3-venv python3-tk`
+
+> Note: window targeting and typing rely on `PyGetWindow`, which is Windows-only.
+> On Linux/macOS the interface and document extraction work, but typing into
+> another window does not.
+
+### Running it manually
+
+If you'd rather not use the launcher scripts:
+
+```bash
+pip install -r requirements.txt
 python arityper_activated.py
 ```
 
-   Other builds of the same tool: `arityper_streamlined.py`, `arityper_simple.py`,
-   `arityper_working.py`, `arityper_final.py`.
+Other builds of the same tool: `arityper_streamlined.py`, `arityper_simple.py`,
+`arityper_working.py`, `arityper_final.py`.
+
+## 🚀 Usage
+
+1. AriTyper opens straight to the typing screen — no login, no activation.
 
 2. Click **"Select Document"** to choose your PDF or Word file.
 

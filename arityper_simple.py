@@ -12,7 +12,6 @@ import socket
 import hashlib
 import json
 import os
-import requests
 from datetime import datetime
 
 # AriTyper is free and unrestricted. There is no activation step, no payment
