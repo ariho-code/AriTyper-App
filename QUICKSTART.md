@@ -75,7 +75,7 @@ The executable will be in the `dist` folder.
 
 ## Troubleshooting
 
-- **Authentication fails**: Check that you're entering the exact license key
+- **App does not open**: Make sure dependencies are installed (`pip install -r requirements.txt`)
 - **Window not found**: Use "Refresh" to update the window list
 - **Typing doesn't work**: Make sure you clicked into the target field within 5 seconds
 - **macOS permissions**: Grant accessibility permissions in System Preferences

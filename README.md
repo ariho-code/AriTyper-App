@@ -1,10 +1,14 @@
 # AriTyper - Professional Document Typing Software
 
-A premium Python application that extracts text from PDF or Word documents and types it rapidly into browser windows that don't accept pasting, with full formatting preservation.
+A Python application that extracts text from PDF or Word documents and types it rapidly into browser windows that don't accept pasting, with full formatting preservation.
 
-## 🔐 Authentication
+## 🆓 Free & Unrestricted
 
-This software requires a license key to use. Contact the vendor to obtain your license key.
+AriTyper is **free**. There is no license key, no activation step, no payment and
+no license server — just download it and run it.
+
+The app works **fully offline**: it never contacts a licensing backend, so it
+keeps working regardless of whether any server is online.
 
 ## ✨ Features
 
@@ -13,7 +17,7 @@ This software requires a license key to use. Contact the vendor to obtain your l
 - ⚡ **Ultra-Fast Typing**: Configurable typing speed (1ms - extreme speed to 100ms+ normal speed)
 - 🖥️ **Cross-Platform**: Works on Windows 8, 10, 11 and macOS 10.12+ (including older and latest versions)
 - 🎯 **Window Targeting**: Select specific browser/application windows to type into
-- 🔒 **Password Protected**: Secure authentication system
+- 🆓 **No License Required**: Free, unrestricted, works fully offline
 - 🎭 **Modern UI**: Beautiful dark-themed interface with smooth animations
 - ✅ **Smart Focus Management**: Only types in the selected window, allows you to continue using your computer
 - 🔧 **Backward Compatible**: Gracefully handles older OS versions with fallback mechanisms
@@ -35,29 +39,31 @@ Note: On macOS, you may need to install additional dependencies. The script will
 
 ## 🚀 Usage
 
-1. Run the application:
+1. Run the application (the app opens straight to the typing screen — no login,
+   no activation):
 ```bash
-python arityper.py
+python arityper_activated.py
 ```
 
-2. Enter your license key when prompted.
+   Other builds of the same tool: `arityper_streamlined.py`, `arityper_simple.py`,
+   `arityper_working.py`, `arityper_final.py`.
 
-3. Click **"Select Document"** to choose your PDF or Word file.
+2. Click **"Select Document"** to choose your PDF or Word file.
 
-4. The extracted text will appear in the preview area with formatting preserved.
+3. The extracted text will appear in the preview area with formatting preserved.
 
-5. Click **"Refresh"** next to Target Window, then double-click to select your browser window.
+4. Click **"Refresh"** next to Target Window, then double-click to select your browser window.
 
-6. Adjust typing speed (in milliseconds):
+5. Adjust typing speed (in milliseconds):
    - **1-5ms**: Extreme speed (for very fast typing)
    - **10-20ms**: Fast speed
    - **50ms+**: Normal/human-like speed
 
-7. Click **"🚀 START TYPING"**.
+6. Click **"🚀 START TYPING"**.
 
-8. **Important**: You have 5 seconds to click into the text field in your target application where you want the text to be typed.
+7. **Important**: You have 5 seconds to click into the text field in your target application where you want the text to be typed.
 
-9. The application will automatically type the extracted text with formatting preserved.
+8. The application will automatically type the extracted text with formatting preserved.
 
 ## ⚙️ Typing Speed Guide
 
@@ -102,7 +108,6 @@ Build output is in the `dist` folder.
 
 ## 🐛 Troubleshooting
 
-- **Authentication Failed**: Ensure you're entering the correct license key
 - **Window Not Found**: Use "Refresh" to update the window list, then select your target window
 - **Typing Not Working**: 
   - Ensure you've clicked into the target field within 5 seconds
@@ -115,7 +120,7 @@ Build output is in the `dist` folder.
 
 ## 📝 License
 
-Commercial Software - License key required.
+Free to use. No license key required.
 
 ## 🆘 Support
 
@@ -124,18 +129,14 @@ Commercial Software - License key required.
 ### Frontend (Website) - Vercel
 The frontend is deployed on Vercel and includes:
 - Landing page with download functionality
-- Payment integration with MTN Mobile Money
-- User activation system
 - Modern responsive design
 
 **Deployment URL**: [AriTyper Website](https://arityper-website.vercel.app)
 
 ### Backend (API) - Render
-The backend API is deployed on Render and provides:
-- License verification
-- Device management
-- Payment processing
-- Admin panel
+An optional backend lives in `admin_webapp/` for device statistics and update
+hosting. **It is not required to run AriTyper** — the app never calls it for
+permission to run.
 
 **API URL**: [AriTyper API](https://arityper-api.onrender.com)
 
@@ -155,4 +156,4 @@ The backend API is deployed on Render and provides:
 - **Email**: `timothy.arihoz@protonmail.com`
 - **GitHub**: `@ariho-tim`
 
-For technical support, license inquiries, or **custom software development**, please contact the developer.
+For technical support or **custom software development**, please contact the developer.

@@ -74,7 +74,7 @@ class AriTyperWorking:
         device_label.pack(pady=(0, 20))
         
         # License status
-        self.license_label = tk.Label(main_frame, text="🔒 Checking license...", 
+        self.license_label = tk.Label(main_frame, text="✅ Free - No License Needed", 
                                      font=("Arial", 12), bg="#1a1a1a", fg="#ffaa00")
         self.license_label.pack(pady=(0, 20))
         
@@ -204,50 +204,14 @@ class AriTyperWorking:
             }
         
     def check_license(self):
-        """Check license with enhanced webapp synchronization"""
-        def check_thread():
-            try:
-                # Check local license file
-                if os.path.exists("license.json"):
-                    with open("license.json") as f:
-                        license_data = json.load(f)
-                        
-                    # Enhanced validation with server
-                    response = requests.post(
-                        f"{self.server_url}/api/device/validate_license",
-                        json={
-                            "device_id": self.device_id, 
-                            "license_key": license_data.get("license_key"),
-                            "app_version": "2.0.0",
-                            "sync_data": {
-                                "last_sync": license_data.get("last_sync"),
-                                "usage_count": license_data.get("usage_count", 0),
-                                "device_info": self.get_device_info()
-                            }
-                        },
-                        timeout=15
-                    )
-                    
-                    if response.status_code == 200 and response.json().get("valid"):
-                        self.root.after(0, self.unlock_app)
-                        return
-                        
-            except:
-                pass
-                
-            # Show activation required
-            self.root.after(0, lambda: self.license_label.config(
-                text="🔒 License Required - Contact Admin", fg="#cc0000"))
-            self.root.after(0, lambda: self.status_label.config(
-                text="Please contact admin to activate your license"))
-                
-        threading.Thread(target=check_thread, daemon=True).start()
-        
+        """AriTyper is free — no license check, no server call, works offline."""
+        self.unlock_app()
+
     def unlock_app(self):
-        """Unlock the app"""
-        self.license_label.config(text="✅ Licensed - Ready to Use", fg="#00ff88")
-        self.status_label.config(text="License verified - Ready to type")
-        
+        """Show the app as free and ready. Nothing is ever locked."""
+        self.license_label.config(text="✅ Free - No License Needed", fg="#00ff88")
+        self.status_label.config(text="Ready to type")
+
     def paste_text(self):
         """Paste text from clipboard"""
         try:

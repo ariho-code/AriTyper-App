@@ -176,32 +176,16 @@ class EnhancedLicenseManager:
         self.server_url = server_url
         
     def validate_license_hybrid(self, license_key: str = None) -> Dict:
-        """Validate license with fallback to local validation"""
-        # First try server validation
-        if self.client.check_server_status():
-            server_result = self.client.validate_license_server(license_key)
-            if server_result.get('valid'):
-                # Server validation successful, update local license
-                return server_result
-        
-        # Fallback to local validation
+        """
+        AriTyper is free — always valid, and no server round-trip.
+
+        The server call is skipped entirely so the app never blocks on an
+        unreachable licensing host.
+        """
         return self.local_manager.validate_license(license_key)
     
-    def activate_license_hybrid(self, license_key: str, phone_number: str = None) -> Dict:
-        """Activate license with server registration"""
-        # Register device first
-        device_id = self.local_manager.get_device_id()
-        user_info = {'phone_number': phone_number} if phone_number else {}
-        
-        if self.client.register_device(device_id, user_info):
-            # Try server activation
-            server_result = self.client.validate_license_server(license_key)
-            if server_result.get('valid'):
-                # Server activation successful, activate locally too
-                local_result = self.local_manager.activate_license(license_key, phone_number)
-                return local_result
-        
-        # Fallback to local activation
+    def activate_license_hybrid(self, license_key: str = None, phone_number: str = None) -> Dict:
+        """No activation needed — the app is already unlocked for everyone."""
         return self.local_manager.activate_license(license_key, phone_number)
     
     def start_monitoring(self):
